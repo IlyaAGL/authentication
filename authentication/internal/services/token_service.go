@@ -18,7 +18,7 @@ import (
 var savedRefreshToken string
 
 func CreateTokens(id string, conn *pgx.Conn) (string, error) {
-	accessToken, id_int, tokenPairID, err := token.GetAccessToken(id)
+	accessToken, id_int, tokenPairID, err := token.GetAccessToken(id, "")
 
 	refreshToken := token.GetUniqueString()
 	hashedToken, err := bcrypt.GenerateFromPassword([]byte(refreshToken), bcrypt.DefaultCost)
@@ -71,7 +71,7 @@ func RefreshAccessToken(oldAccessToken string, conn *pgx.Conn) (string, error) {
 
 		return "", err
 	} else {
-		newAccessToken, err := CreateTokens(strconv.Itoa(userID), conn)
+		newAccessToken, _, _, err := token.GetAccessToken(strconv.Itoa(userID), actualTokenPairId)
 
 		if err != nil {
 			return "", errors.New("failed to create new token")

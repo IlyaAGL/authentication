@@ -10,7 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func GetAccessToken(id string) (string, int, string, error) {
+func GetAccessToken(id, passedTokenPairID string) (string, int, string, error) {
 	godotenv.Load()
 	
 	PRIVATE_KEY := os.Getenv("PRIVATE_KEY")
@@ -21,7 +21,13 @@ func GetAccessToken(id string) (string, int, string, error) {
 		return "", 0, "", err
 	}
 
-	tokenPairID := GetUniqueString()
+	var tokenPairID string
+
+	if passedTokenPairID == "" {
+		tokenPairID = GetUniqueString()
+	} else {
+		tokenPairID = passedTokenPairID
+	}
 
 	claims := &jwt.MapClaims{
 		"iss": "Ilya",
